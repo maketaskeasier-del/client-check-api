@@ -154,7 +154,12 @@ let headlines = items.map(item => {
 }).filter(h => h.title && h.title !== "Google News");
 
       // 🧠 Remove duplicates (IMPORTANT FIX)
-      headlines = [...new Set(headlines)];
+     const seen = new Set();
+headlines = headlines.filter(h => {
+  if (seen.has(h.title)) return false;
+  seen.add(h.title);
+  return true;
+});
 
       // 🧠 Score
       const scored = headlines.map(h => ({
@@ -167,7 +172,7 @@ let headlines = items.map(item => {
       const risk = getRiskLevel(scored);
 
       // 🎯 Smart slicing
-      const final = scored.filter(h => h.score > 0).slice(0, 5);
+      const final = scored.filter(h => h.score >= 3).slice(0, 5);
 
       result.push({
         name,
